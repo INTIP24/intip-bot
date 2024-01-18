@@ -6,7 +6,7 @@ import {
   type EmbedAuthorOptions,
 } from "discord.js";
 
-type EmbedChild = AuthorProps | FieldProps | FooterProps;
+type EmbedChild = AuthorComponent | FieldComponent | FooterComponent;
 
 type EmbedProps = Omit<
   APIEmbed,
@@ -44,20 +44,20 @@ export function Embed({ children, ...other }: EmbedProps) {
   return builder;
 }
 
-type AuthorProps = EmbedAuthorOptions & { type: "author" };
+type AuthorComponent = EmbedAuthorOptions & { type: "author" };
 
-export function Author(props: AuthorProps) {
+export function Author(props: EmbedAuthorOptions) {
   return { ...props, type: "author" };
 }
 
-type FieldProps = APIEmbedField & { type: "field" };
+type FieldComponent = APIEmbedField & { type: "field" };
 
-export function Field(props: FieldProps) {
+export function Field(props: APIEmbedField) {
   return { ...props, type: "field" };
 }
 
-type FooterProps = EmbedFooterOptions & { type: "footer" };
+type FooterComponent = EmbedFooterOptions & { type: "footer" };
 
-export function Footer(props: FooterProps) {
+export function Footer(props: EmbedFooterOptions) {
   return { ...props, type: "footer" };
 }
