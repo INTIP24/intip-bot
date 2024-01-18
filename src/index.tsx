@@ -1,6 +1,6 @@
-import { Client, Events, GatewayIntentBits } from "discord.js";
+import { Client, Events, GatewayIntentBits, TextChannel } from "discord.js";
 import { env } from "./env";
-import { Embed, Field } from "./lib/jsx/Embed";
+import { Author, Embed, Field, Footer } from "./lib/jsx/Embed";
 import { createElement } from "./lib/jsx";
 
 const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
@@ -8,15 +8,40 @@ const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.M
 bot.once(Events.ClientReady, (client) => {
   console.log("Ready!");
 
+  // Definitely not the right way for this! Buuuuut it works :)
+  var logsChannel:TextChannel | null = null;
+  client.channels.fetch(env.LOGS_CHANNEL)
+    .then(channel => {
+      logsChannel = channel as TextChannel;
+    });
+
   client.on(Events.MessageDelete, async (message) => {
     if (message.partial) await message.fetch();
-    console.log(message.content);
 
-    if (message.channel) {
-      message.channel.send({
+    if (logsChannel != null && message.channel && message.author && message.content) {
+      logsChannel.send({
         embeds: [
           <Embed title="Message deleted" color={0xFF0000}>
-            <Field name={`Message deleted by {}`} value={message.content} />
+            {`**Sent by <@!${message.author.id}> in <#${message.channel.id}>**\n${message.content}`}
+            <Footer iconURL={message.author.avatarURL() || undefined} text={`Author: ${message.author.username} (${message.author.id})\nMessage ID: ${message.id}`}/>
+          </Embed>
+        ]
+      })
+    }
+  });
+
+  client.on(Events.MessageUpdate, async (oldMessage, newMessage) => {
+    if (oldMessage.partial) await oldMessage.fetch();
+    if (newMessage.partial) await newMessage.fetch();
+
+    if (logsChannel != null && oldMessage.content && newMessage.content && newMessage.author) {
+      logsChannel.send({
+        embeds: [
+          <Embed title="Message edited" color={0x3498EB}>
+            {`**Sent by <@!${newMessage.author.id}> in <#${newMessage.channel.id}>**`}
+            <Field name="Before" value={oldMessage.content}/>
+            <Field name="After" value={newMessage.content}/>
+            <Footer iconURL={newMessage.author.avatarURL() || undefined} text={`Author: ${newMessage.author.username} (${newMessage.author.id})\nMessage ID: ${newMessage.id}`}/>
           </Embed>
         ]
       })
