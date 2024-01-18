@@ -9,6 +9,7 @@ bot.once(Events.ClientReady, (client) => {
   console.log("Ready!");
 
   // Definitely not the right way for this! Buuuuut it works :)
+  // TODO: Redo how this is handled LOL
   var logsChannel:TextChannel | null = null;
   client.channels.fetch(env.LOGS_CHANNEL)
     .then(channel => {
@@ -17,8 +18,9 @@ bot.once(Events.ClientReady, (client) => {
 
   client.on(Events.MessageDelete, async (message) => {
     if (message.partial) await message.fetch();
+    if (!message.channel || !message.author || !message.content) return;
 
-    if (logsChannel != null && message.channel && message.author && message.content) {
+    if (logsChannel != null) {
       logsChannel.send({
         embeds: [
           <Embed title="Message deleted" color={0xFF0000}>
@@ -34,7 +36,11 @@ bot.once(Events.ClientReady, (client) => {
     if (oldMessage.partial) await oldMessage.fetch();
     if (newMessage.partial) await newMessage.fetch();
 
-    if (logsChannel != null && oldMessage.content && newMessage.content && newMessage.author) {
+    // Why? Because I can.
+    if (!oldMessage.channel || !oldMessage.author || !oldMessage.content) return;
+    if (!newMessage.channel || !newMessage.author || !newMessage.content) return;
+
+    if (logsChannel != null) {
       logsChannel.send({
         embeds: [
           <Embed title="Message edited" color={0x3498EB}>
