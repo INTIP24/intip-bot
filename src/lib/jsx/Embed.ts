@@ -11,7 +11,7 @@ import { string } from "zod";
 type EmbedProps = Omit<
   APIEmbed,
   "author" | "fields" | "description" | "footer"
->;
+> & { children: (string | Record<string, any>)[] };
 
 export function Embed({ children, ...other }: EmbedProps) {
   const builder = new EmbedBuilder(other);
