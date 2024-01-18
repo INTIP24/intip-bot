@@ -19,6 +19,7 @@ export function Embed({ children, ...other }: EmbedProps) {
   for (const item of children) {
     if (typeof item === "string") {
       builder.setDescription(item);
+      continue;
     }
 
     if (typeof item !== "object") {

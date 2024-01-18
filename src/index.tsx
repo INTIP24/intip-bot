@@ -15,9 +15,8 @@ bot.once(Events.ClientReady, (client) => {
     if (message.channel) {
       message.channel.send({
         embeds: [
-          <Embed title="test">
-            {message.content}
-            <Field name="test" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+          <Embed title="Message deleted" color={0xFF0000}>
+            <Field name={`Message deleted by {}`} value={message.content} />
           </Embed>
         ]
       })
