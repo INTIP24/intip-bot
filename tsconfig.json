@@ -16,6 +16,10 @@
     "declaration": true,
     "jsx": "react",
     "jsxFactory": "createElement",
-    "jsxFragmentFactory": "Fragment"
+    "jsxFragmentFactory": "Fragment",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   }
 }
