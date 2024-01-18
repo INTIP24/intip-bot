@@ -11,7 +11,7 @@ import { string } from "zod";
 type EmbedProps = Omit<
   APIEmbed,
   "author" | "fields" | "description" | "footer"
->;
+> & { children: (string | Record<string, any>)[] };
 
 export function Embed({ children, ...other }: EmbedProps) {
   const builder = new EmbedBuilder(other);
@@ -44,13 +44,13 @@ export function Embed({ children, ...other }: EmbedProps) {
 }
 
 export function Author(props: EmbedAuthorOptions) {
-  return props;
+  return { ...props, type: "author" };
 }
 
 export function Field(props: APIEmbedField) {
-  return props;
+  return { ...props, type: "field" };
 }
 
 export function Footer(props: EmbedFooterOptions) {
-  return props;
+  return { ...props, type: "footer" };
 }
