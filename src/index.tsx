@@ -3,7 +3,13 @@ import { env } from "./env";
 import { Embed, Field } from "./lib/jsx/Embed";
 import { createElement } from "./lib/jsx";
 
-const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
+const bot = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessages,
+  ],
+});
 
 bot.once(Events.ClientReady, (client) => {
   console.log("Ready!");
@@ -17,12 +23,19 @@ bot.once(Events.ClientReady, (client) => {
         embeds: [
           <Embed title="test">
             {message.content}
-            <Field name="test" value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
-          </Embed>
-        ]
-      })
+            <Field
+              name="test"
+              value="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+            />
+          </Embed>,
+        ],
+      });
     }
   });
+});
+
+bot.on(Events.InteractionCreate, async (interaction) => {
+  interaction;
 });
 
 bot.login(env.TOKEN);
