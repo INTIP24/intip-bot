@@ -180,30 +180,6 @@ export function useUser(
 ) {
   // TODO: Implement remaining hooks
   throw new Error("Unimplemented");
-
-  const stringOption = new SlashCommandStringOption()
-    .setName(name)
-    .setDescription(description);
-
-  if (options.choices) {
-    for (const choice of options.choices) {
-      stringOption.addChoices(choice);
-    }
-  }
-
-  if (options.autocomplete) {
-    stringOption.setAutocomplete(true);
-  }
-
-  if (options.minLength) {
-    stringOption.setMinLength(options.minLength);
-  }
-
-  if (options.maxLength) {
-    stringOption.setMaxLength(options.maxLength);
-  }
-
-  state.options.push(stringOption);
 }
 
 export function useChannel(
@@ -213,30 +189,6 @@ export function useChannel(
 ) {
   // TODO: Implement remaining hooks
   throw new Error("Unimplemented");
-
-  const stringOption = new SlashCommandStringOption()
-    .setName(name)
-    .setDescription(description);
-
-  if (options.choices) {
-    for (const choice of options.choices) {
-      stringOption.addChoices(choice);
-    }
-  }
-
-  if (options.autocomplete) {
-    stringOption.setAutocomplete(true);
-  }
-
-  if (options.minLength) {
-    stringOption.setMinLength(options.minLength);
-  }
-
-  if (options.maxLength) {
-    stringOption.setMaxLength(options.maxLength);
-  }
-
-  state.options.push(stringOption);
 }
 
 export function useRole(
@@ -246,30 +198,6 @@ export function useRole(
 ) {
   // TODO: Implement remaining hooks
   throw new Error("Unimplemented");
-
-  const stringOption = new SlashCommandStringOption()
-    .setName(name)
-    .setDescription(description);
-
-  if (options.choices) {
-    for (const choice of options.choices) {
-      stringOption.addChoices(choice);
-    }
-  }
-
-  if (options.autocomplete) {
-    stringOption.setAutocomplete(true);
-  }
-
-  if (options.minLength) {
-    stringOption.setMinLength(options.minLength);
-  }
-
-  if (options.maxLength) {
-    stringOption.setMaxLength(options.maxLength);
-  }
-
-  state.options.push(stringOption);
 }
 
 export function useMentionable(
@@ -279,30 +207,6 @@ export function useMentionable(
 ) {
   // TODO: Implement remaining hooks
   throw new Error("Unimplemented");
-
-  const stringOption = new SlashCommandStringOption()
-    .setName(name)
-    .setDescription(description);
-
-  if (options.choices) {
-    for (const choice of options.choices) {
-      stringOption.addChoices(choice);
-    }
-  }
-
-  if (options.autocomplete) {
-    stringOption.setAutocomplete(true);
-  }
-
-  if (options.minLength) {
-    stringOption.setMinLength(options.minLength);
-  }
-
-  if (options.maxLength) {
-    stringOption.setMaxLength(options.maxLength);
-  }
-
-  state.options.push(stringOption);
 }
 
 export function useNumber(
@@ -312,30 +216,6 @@ export function useNumber(
 ) {
   // TODO: Implement remaining hooks
   throw new Error("Unimplemented");
-
-  const stringOption = new SlashCommandStringOption()
-    .setName(name)
-    .setDescription(description);
-
-  if (options.choices) {
-    for (const choice of options.choices) {
-      stringOption.addChoices(choice);
-    }
-  }
-
-  if (options.autocomplete) {
-    stringOption.setAutocomplete(true);
-  }
-
-  if (options.minLength) {
-    stringOption.setMinLength(options.minLength);
-  }
-
-  if (options.maxLength) {
-    stringOption.setMaxLength(options.maxLength);
-  }
-
-  state.options.push(stringOption);
 }
 
 export function useAttachment(
@@ -345,28 +225,4 @@ export function useAttachment(
 ) {
   // TODO: Implement remaining hooks
   throw new Error("Unimplemented");
-
-  const stringOption = new SlashCommandStringOption()
-    .setName(name)
-    .setDescription(description);
-
-  if (options.choices) {
-    for (const choice of options.choices) {
-      stringOption.addChoices(choice);
-    }
-  }
-
-  if (options.autocomplete) {
-    stringOption.setAutocomplete(true);
-  }
-
-  if (options.minLength) {
-    stringOption.setMinLength(options.minLength);
-  }
-
-  if (options.maxLength) {
-    stringOption.setMaxLength(options.maxLength);
-  }
-
-  state.options.push(stringOption);
 }
