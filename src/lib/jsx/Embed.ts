@@ -2,16 +2,16 @@ import {
   EmbedBuilder,
   type APIEmbed,
   type APIEmbedField,
-  type APIEmbedFooter,
   type EmbedFooterOptions,
   type EmbedAuthorOptions,
 } from "discord.js";
-import { string } from "zod";
+
+type EmbedChild = AuthorComponent | FieldComponent | FooterComponent;
 
 type EmbedProps = Omit<
   APIEmbed,
   "author" | "fields" | "description" | "footer"
-> & { children: (string | Record<string, any>)[] };
+> & { children: string | EmbedChild[] };
 
 export function Embed({ children, ...other }: EmbedProps) {
   const builder = new EmbedBuilder(other);
@@ -44,13 +44,19 @@ export function Embed({ children, ...other }: EmbedProps) {
   return builder;
 }
 
+type AuthorComponent = EmbedAuthorOptions & { type: "author" };
+
 export function Author(props: EmbedAuthorOptions) {
   return { ...props, type: "author" };
 }
 
+type FieldComponent = APIEmbedField & { type: "field" };
+
 export function Field(props: APIEmbedField) {
   return { ...props, type: "field" };
 }
+
+type FooterComponent = EmbedFooterOptions & { type: "footer" };
 
 export function Footer(props: EmbedFooterOptions) {
   return { ...props, type: "footer" };

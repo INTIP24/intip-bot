@@ -53,4 +53,8 @@ bot.once(Events.ClientReady, (client) => {
   });
 });
 
+bot.on(Events.InteractionCreate, async (interaction) => {
+  interaction;
+});
+
 bot.login(env.TOKEN);

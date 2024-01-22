@@ -4,7 +4,7 @@ import { Button, Row, Message, createElement, Embed, Modal } from "@/lib/jsx";
 import { useButton } from "@/lib/hooks";
 
 function createRoom(): InteractionHandler {
-  const openModal = useButton(async (interaction, env, ctx) {
+  const openModal = useButton(async (interaction, env, ctx) => {
     ctx.wait();
 
     return <Modal></Modal>;
