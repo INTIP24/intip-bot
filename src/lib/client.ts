@@ -41,6 +41,8 @@ export class BotClient extends Client {
   }
 
   async init() {
+    if (this.initialized) return;
+
     await commandLoader(this.commands, this.commandsPath);
 
     this.initialized = true;
