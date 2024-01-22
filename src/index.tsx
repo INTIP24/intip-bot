@@ -1,16 +1,16 @@
-import { Client, Events, GatewayIntentBits, TextChannel } from "discord.js";
+import { Client, Events, GatewayIntentBits, Partials, TextChannel } from "discord.js";
 import { env } from "./env";
 import { Author, Embed, Field, Footer } from "./lib/jsx/Embed";
 import { createElement } from "./lib/jsx";
 
-const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages] });
+const bot = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages], partials: [Partials.Message] });
 
 bot.once(Events.ClientReady, (client) => {
   console.log("Ready!");
 
   // Definitely not the right way for this! Buuuuut it works :)
   // TODO: Redo how this is handled LOL
-  var logsChannel:TextChannel | null = null;
+  var logsChannel: TextChannel | null = null;
   client.channels.fetch(env.LOGS_CHANNEL)
     .then(channel => {
       logsChannel = channel as TextChannel;
@@ -18,14 +18,14 @@ bot.once(Events.ClientReady, (client) => {
 
   client.on(Events.MessageDelete, async (message) => {
     if (message.partial) await message.fetch();
-    if (!message.channel || !message.author || !message.content) return;
+    if (!message.inGuild()) return;
 
     if (logsChannel != null) {
       logsChannel.send({
         embeds: [
           <Embed title="Message deleted" color={0xFF0000}>
             {`**Sent by <@!${message.author.id}> in <#${message.channel.id}>**\n${message.content}`}
-            <Footer iconURL={message.author.avatarURL() || undefined} text={`Author: ${message.author.username} (${message.author.id})\nMessage ID: ${message.id}`}/>
+            <Footer iconURL={message.author.avatarURL() || undefined} text={`Author: ${message.author.username} (${message.author.id})\nMessage ID: ${message.id}`} />
           </Embed>
         ]
       })
@@ -36,18 +36,16 @@ bot.once(Events.ClientReady, (client) => {
     if (oldMessage.partial) await oldMessage.fetch();
     if (newMessage.partial) await newMessage.fetch();
 
-    // Why? Because I can.
-    if (!oldMessage.channel || !oldMessage.author || !oldMessage.content) return;
-    if (!newMessage.channel || !newMessage.author || !newMessage.content) return;
+    if (!oldMessage.inGuild() || !newMessage.inGuild()) return;
 
     if (logsChannel != null) {
       logsChannel.send({
         embeds: [
           <Embed title="Message edited" color={0x3498EB}>
             {`**Sent by <@!${newMessage.author.id}> in <#${newMessage.channel.id}>**`}
-            <Field name="Before" value={oldMessage.content}/>
-            <Field name="After" value={newMessage.content}/>
-            <Footer iconURL={newMessage.author.avatarURL() || undefined} text={`Author: ${newMessage.author.username} (${newMessage.author.id})\nMessage ID: ${newMessage.id}`}/>
+            <Field name="Before" value={oldMessage.content} />
+            <Field name="After" value={newMessage.content} />
+            <Footer iconURL={newMessage.author.avatarURL() || undefined} text={`Author: ${newMessage.author.username} (${newMessage.author.id})\nMessage ID: ${newMessage.id}`} />
           </Embed>
         ]
       })
