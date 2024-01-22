@@ -50,7 +50,7 @@ export class BotClient extends Client {
 
   public override async login(token: string): Promise<string> {
     if (!this.initialized) {
-      throw new Error("You haven't run `init()`");
+      await this.init();
     }
 
     return super.login(token);
