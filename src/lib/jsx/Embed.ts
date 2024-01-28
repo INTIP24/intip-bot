@@ -6,12 +6,12 @@ import {
   type EmbedAuthorOptions,
 } from "discord.js";
 
-type EmbedChild = AuthorComponent | FieldComponent | FooterComponent;
+type EmbedChild = string | AuthorComponent | FieldComponent | FooterComponent;
 
 type EmbedProps = Omit<
   APIEmbed,
   "author" | "fields" | "description" | "footer"
-> & { children: string | EmbedChild[] };
+> & { children: EmbedChild[] };
 
 export function Embed({ children, ...other }: EmbedProps) {
   const builder = new EmbedBuilder(other);
