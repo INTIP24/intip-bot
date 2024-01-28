@@ -15,8 +15,6 @@ export default slashCommand(function createGroup() {
   });
 
   return async (interaction) => {
-    await interaction.deferReply();
-
     return (
       <Message ephemeral>
         <Embed title="Ryhmän luonti">
