@@ -1,17 +1,19 @@
-import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { join, dirname } from "node:path";
 import { Events, GatewayIntentBits } from "discord.js";
 import { env } from "./env";
 import { Embed, Field } from "./lib/jsx/Embed";
 import { createElement } from "./lib/jsx";
 import { BotClient } from "./lib/client";
 
+const path = dirname(fileURLToPath(import.meta.url));
 const bot = new BotClient({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMessages,
   ],
-  commandsPath: join(import.meta.dirname, "commands"),
+  commandsPath: join(path, "commands"),
 });
 
 bot.once(Events.ClientReady, () => {

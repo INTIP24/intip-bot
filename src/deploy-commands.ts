@@ -1,5 +1,6 @@
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { argv } from "node:process";
+import { fileURLToPath } from "node:url";
 import { REST, Routes } from "discord.js";
 import { env } from "./env";
 import type { CommandData } from "./lib/commands";
@@ -8,8 +9,10 @@ import { BotClient } from "lib/client";
 async function main() {
   console.log(argv.slice(2));
 
+  const path = dirname(fileURLToPath(import.meta.url));
+
   const client = new BotClient({
-    commandsPath: join(import.meta.dirname, "commands"),
+    commandsPath: join(path, "commands"),
     intents: [],
   });
 
