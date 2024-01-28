@@ -1,11 +1,10 @@
-import type {
-  CacheType,
-  RESTPostAPIChatInputApplicationCommandsJSONBody,
-  RESTPostAPIContextMenuApplicationCommandsJSONBody,
-  Interaction,
-  ChatInputCommandInteraction,
+import {
+  type RESTPostAPIChatInputApplicationCommandsJSONBody,
+  type RESTPostAPIContextMenuApplicationCommandsJSONBody,
+  type ChatInputCommandInteraction,
   ContextMenuCommandInteraction,
-  ContextMenuCommandType,
+  type CommandInteraction,
+  type ContextMenuCommandType,
 } from "discord.js";
 import {
   gatherContextMenuCommandData,
@@ -19,12 +18,17 @@ import {
 } from "./hooks/data";
 
 export type SlashCommandHandler = (
-  interaction?: Interaction<CacheType>,
-) => (interaction: Interaction<CacheType>) => Promise<void>;
+  interaction: ChatInputCommandInteraction,
+) => Promise<any>;
 export type ContextMenuCommandHandler = (
-  interaction?: any,
-) => (interaction: Interaction<CacheType>) => Promise<void>;
-export type CommandHandler = SlashCommandHandler | ContextMenuCommandHandler;
+  interaction: ContextMenuCommandInteraction,
+) => Promise<any>;
+
+export type CommandHandler = (interaction: CommandInteraction) => Promise<any>;
+
+export type WrappedCommandHandler = (
+  interaction: CommandInteraction,
+) => (interaction: CommandInteraction) => Promise<any>;
 
 export type CommandData =
   | RESTPostAPIChatInputApplicationCommandsJSONBody
@@ -32,10 +36,10 @@ export type CommandData =
 
 export type Command = {
   data: CommandData;
-  handler: CommandHandler;
+  handler: WrappedCommandHandler;
 };
 
-export function slashCommand(handler: SlashCommandHandler): Command {
+export function slashCommand(handler: () => SlashCommandHandler): Command {
   resetGlobalHookState();
 
   handler();
@@ -44,18 +48,22 @@ export function slashCommand(handler: SlashCommandHandler): Command {
 
   return {
     data,
-    handler: (interaction: ChatInputCommandInteraction<CacheType>) => {
+    handler: (interaction) => {
+      if (!interaction.isChatInputCommand()) {
+        throw new Error(`Wrong command type (slash) running for ${data.name}!`);
+      }
+
       resetGlobalHookState();
 
-      setupSlashCommandHooks(interaction);
+      setupSlashCommandHooks(interaction as ChatInputCommandInteraction);
 
-      return handler();
+      return handler() as CommandHandler;
     },
   };
 }
 export function contextMenuCommand(
   menuType: ContextMenuCommandType,
-  handler: ContextMenuCommandHandler,
+  handler: () => ContextMenuCommandHandler,
 ): Command {
   resetGlobalHookState();
 
@@ -67,12 +75,20 @@ export function contextMenuCommand(
 
   return {
     data,
-    handler: (interaction: ContextMenuCommandInteraction<CacheType>) => {
+    handler: (interaction) => {
+      if (!interaction.isContextMenuCommand()) {
+        throw new Error(
+          `Wrong command type (context) running for ${data.name}!`,
+        );
+      }
+
       resetGlobalHookState();
 
-      setupContextMenuCommandHooks(interaction);
+      setupContextMenuCommandHooks(
+        interaction as ContextMenuCommandInteraction,
+      );
 
-      return handler();
+      return handler() as CommandHandler;
     },
   };
 }
