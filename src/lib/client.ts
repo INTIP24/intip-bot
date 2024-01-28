@@ -37,7 +37,11 @@ export class BotClient extends Client {
 
     const process = command.handler(interaction);
 
-    await process(interaction);
+    const result = await process(interaction);
+
+    if (!result) return;
+
+    interaction.reply(result);
   }
 
   async init() {
