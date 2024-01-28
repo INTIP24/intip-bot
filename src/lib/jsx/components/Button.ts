@@ -1,14 +1,14 @@
-import { ButtonBuilder, type ButtonStyle } from "discord.js";
+import { ButtonBuilder, ButtonStyle } from "discord.js";
 
 type ButtonBaseProps = {
   disabled?: boolean;
-  children: string;
+  children: string | string[];
   emoji?: string;
-  style?: ButtonStyle;
 };
 
 type ActionButtonProps = ButtonBaseProps & {
   action: string;
+  style?: ButtonStyle;
 };
 type URLButtonProps = ButtonBaseProps & {
   url: string;
@@ -16,20 +16,20 @@ type URLButtonProps = ButtonBaseProps & {
 
 type ButtonProps = ActionButtonProps | URLButtonProps;
 
-export function Button(props: ButtonProps) {
+export function Button({ children, ...props }: ButtonProps) {
   const button = new ButtonBuilder();
 
   if ("action" in props) {
     button.setCustomId(props.action);
+    if (props.style) {
+      button.setStyle(props.style);
+    }
   } else {
     button.setURL(props.url);
+    button.setStyle(ButtonStyle.Link);
   }
 
-  button.setLabel(props.children);
-
-  if (props.style) {
-    button.setStyle(props.style);
-  }
+  button.setLabel((children as string[]).join(""));
 
   if (props.disabled) {
     button.setDisabled(true);
