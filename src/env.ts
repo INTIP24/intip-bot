@@ -5,6 +5,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
+    CLIENT_ID: z.string(),
     TOKEN: z.string(),
   },
   runtimeEnv: process.env,

@@ -2,17 +2,14 @@ import { join } from "node:path";
 import { readdir } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { Collection } from "discord.js";
-
-export interface FileImport {
-  name: string;
-}
+import type { Command } from "lib/commands";
 
 export const allowedFiletypes = ["js", "ts", "tsx"];
 
-export async function loadFolder<T extends FileImport>(
+export async function loadFolder<T>(
+  collection: Collection<string, T>,
   path: string,
-): Promise<Collection<string, T>> {
-  const collection = new Collection<string, T>();
+): Promise<void> {
   const files = await readdir(path);
 
   for (const file of files) {
@@ -26,6 +23,11 @@ export async function loadFolder<T extends FileImport>(
     const fileWithoutExtension = file.split(".").slice(0, -1).join(".");
     collection.set(fileWithoutExtension, item);
   }
+}
 
-  return collection;
+export async function commandLoader(
+  collection: Collection<string, Command>,
+  path: string,
+) {
+  return loadFolder(collection, path);
 }
