@@ -17,29 +17,36 @@ import {
   setupSlashCommandHooks,
 } from "./hooks/data";
 
-export type SlashCommandHandler = (
+export type SlashCommandHandler<TContext> = (
   interaction: ChatInputCommandInteraction,
+  ctx: TContext,
 ) => Promise<any>;
-export type ContextMenuCommandHandler = (
+export type ContextMenuCommandHandler<TContext> = (
   interaction: ContextMenuCommandInteraction,
+  ctx: TContext,
 ) => Promise<any>;
 
-export type CommandHandler = (interaction: CommandInteraction) => Promise<any>;
-
-export type WrappedCommandHandler = (
+export type CommandHandler<TContext> = (
   interaction: CommandInteraction,
-) => (interaction: CommandInteraction) => Promise<any>;
+  ctx: TContext,
+) => Promise<any>;
+
+export type WrappedCommandHandler<TContext> = (
+  interaction: CommandInteraction,
+) => (interaction: CommandInteraction, ctx: TContext) => Promise<any>;
 
 export type CommandData =
   | RESTPostAPIChatInputApplicationCommandsJSONBody
   | RESTPostAPIContextMenuApplicationCommandsJSONBody;
 
-export type Command = {
+export type Command<TContext> = {
   data: CommandData;
-  handler: WrappedCommandHandler;
+  handler: WrappedCommandHandler<TContext>;
 };
 
-export function slashCommand(handler: () => SlashCommandHandler): Command {
+export function slashCommand<TContext>(
+  handler: () => SlashCommandHandler<TContext>,
+): Command<TContext> {
   resetGlobalHookState();
 
   handler();
@@ -57,14 +64,14 @@ export function slashCommand(handler: () => SlashCommandHandler): Command {
 
       setupSlashCommandHooks(interaction as ChatInputCommandInteraction);
 
-      return handler() as CommandHandler;
+      return handler() as CommandHandler<TContext>;
     },
   };
 }
-export function contextMenuCommand(
+export function contextMenuCommand<TContext>(
   menuType: ContextMenuCommandType,
-  handler: () => ContextMenuCommandHandler,
-): Command {
+  handler: () => ContextMenuCommandHandler<TContext>,
+): Command<TContext> {
   resetGlobalHookState();
 
   state.menuType = menuType;
@@ -88,7 +95,7 @@ export function contextMenuCommand(
         interaction as ContextMenuCommandInteraction,
       );
 
-      return handler() as CommandHandler;
+      return handler() as CommandHandler<TContext>;
     },
   };
 }

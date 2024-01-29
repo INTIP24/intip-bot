@@ -9,21 +9,38 @@ import {
 import type { Command } from "./commands";
 import { commandLoader } from "./loaders";
 
-type BotClientOptions = {
+type CreateContext<TContext> = (
+  bot: BotClient<TContext, true>,
+) => Promise<TContext>;
+
+type BotClientOptions<TContext> = {
   commandsPath: string;
+  createContext?: CreateContext<TContext>;
 } & ClientOptions;
 
-export class BotClient extends Client {
-  public commands = new Collection<string, Command>();
+export class BotClient<
+  TContext,
+  Ready extends boolean = boolean,
+> extends Client<Ready> {
+  public commands = new Collection<string, Command<TContext>>();
+  public ctx?: TContext;
+  private createContext: CreateContext<TContext>;
   private commandsPath: string;
   private initialized = false;
 
-  constructor(options: BotClientOptions) {
+  constructor(options: BotClientOptions<TContext>) {
     super(options);
 
     this.commandsPath = options.commandsPath;
+    this.createContext = options.createContext || ((() => ({})) as any);
 
     this.on(Events.InteractionCreate, this.commandInteractionHandler);
+    this.once(Events.ClientReady, this.readyHandler as any);
+  }
+
+  private async readyHandler(client: BotClient<TContext, true>) {
+    this.ctx = await this.createContext(client);
+    console.log("Ready!");
   }
 
   private async commandInteractionHandler(interaction: Interaction<CacheType>) {
@@ -37,7 +54,7 @@ export class BotClient extends Client {
 
     const process = command.handler(interaction);
 
-    const result = await process(interaction);
+    const result = await process(interaction, this.ctx!);
 
     if (!result) return;
 
