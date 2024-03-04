@@ -2,8 +2,9 @@ import { ButtonStyle } from "discord.js";
 import { slashCommand } from "../lib/commands";
 import { Button, Row, Message, createElement, Embed, Field } from "../lib/jsx";
 import { useBoolean, useDescription, useName, useString } from "lib/hooks";
+import type { Context } from "../context";
 
-export default slashCommand(function createGroup() {
+export default slashCommand<Context>(function createGroup() {
   useName("creategroup");
   useDescription("Create a group");
   const test = useBoolean("test", "?", { required: true })!;
@@ -14,7 +15,13 @@ export default slashCommand(function createGroup() {
     ],
   });
 
-  return async (interaction) => {
+  return async (interaction, ctx) => {
+    if (interaction.inGuild()) {
+      await interaction.channel?.send("Ping!");
+
+      await ctx.logsChannel.send("Message Sent.");
+    }
+
     return (
       <Message ephemeral>
         <Embed title="Ryhmän luonti">
