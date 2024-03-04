@@ -19,33 +19,33 @@ import {
 
 export type SlashCommandHandler<TContext> = (
   interaction: ChatInputCommandInteraction,
-  ctx: TContext,
+  ctx: TContext
 ) => Promise<any>;
 export type ContextMenuCommandHandler<TContext> = (
   interaction: ContextMenuCommandInteraction,
-  ctx: TContext,
+  ctx: TContext
 ) => Promise<any>;
 
 export type CommandHandler<TContext> = (
   interaction: CommandInteraction,
-  ctx: TContext,
+  ctx: TContext
 ) => Promise<any>;
 
 export type WrappedCommandHandler<TContext> = (
-  interaction: CommandInteraction,
+  interaction: CommandInteraction
 ) => (interaction: CommandInteraction, ctx: TContext) => Promise<any>;
 
 export type CommandData =
   | RESTPostAPIChatInputApplicationCommandsJSONBody
   | RESTPostAPIContextMenuApplicationCommandsJSONBody;
 
-export type Command<TContext> = {
+export type Command<TContext = {}> = {
   data: CommandData;
   handler: WrappedCommandHandler<TContext>;
 };
 
 export function slashCommand<TContext>(
-  handler: () => SlashCommandHandler<TContext>,
+  handler: () => SlashCommandHandler<TContext>
 ): Command<TContext> {
   resetGlobalHookState();
 
@@ -70,7 +70,7 @@ export function slashCommand<TContext>(
 }
 export function contextMenuCommand<TContext>(
   menuType: ContextMenuCommandType,
-  handler: () => ContextMenuCommandHandler<TContext>,
+  handler: () => ContextMenuCommandHandler<TContext>
 ): Command<TContext> {
   resetGlobalHookState();
 
@@ -85,14 +85,14 @@ export function contextMenuCommand<TContext>(
     handler: (interaction) => {
       if (!interaction.isContextMenuCommand()) {
         throw new Error(
-          `Wrong command type (context) running for ${data.name}!`,
+          `Wrong command type (context) running for ${data.name}!`
         );
       }
 
       resetGlobalHookState();
 
       setupContextMenuCommandHooks(
-        interaction as ContextMenuCommandInteraction,
+        interaction as ContextMenuCommandInteraction
       );
 
       return handler() as CommandHandler<TContext>;
