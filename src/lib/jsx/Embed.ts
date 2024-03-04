@@ -11,10 +11,12 @@ type EmbedChild = string | AuthorComponent | FieldComponent | FooterComponent;
 type EmbedProps = Omit<
   APIEmbed,
   "author" | "fields" | "description" | "footer"
-> & { children: EmbedChild[] };
+> & { children: EmbedChild | EmbedChild[] };
 
 export function Embed({ children, ...other }: EmbedProps) {
   const builder = new EmbedBuilder(other);
+
+  if (!Array.isArray(children)) children = [children];
 
   for (const item of children) {
     if (typeof item === "string") {
